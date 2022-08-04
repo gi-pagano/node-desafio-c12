@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Taza",
+    "price": 1200,
+    "thumbnail": "https://cdn2.iconfinder.com/data/icons/valentine-day-16/512/574_Cup_Coffee_Tea_Love_valentine_valentines_day_love-256.png",
+    "id": 1
+  },
+  {
+    "name": "Vela",
+    "price": 2100,
+    "thumbnail": "https://cdn2.iconfinder.com/data/icons/valentine-day-16/512/700_candle_love_heart_wedding_valentine_valentines_day_love-256.png",
+    "id": 2
+  },
+  {
+    "name": "Florero",
+    "price": 3300,
+    "thumbnail": "https://cdn2.iconfinder.com/data/icons/valentines-day-flat-line-1/59/heart-flower-vase-256.png",
+    "id": 3
+  }
+]
