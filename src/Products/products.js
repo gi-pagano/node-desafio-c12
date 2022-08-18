@@ -1,3 +1,73 @@
+const { options } = require ('../../options/mariaDB.js')
+const knex = require('knex')(options)
+
+const listOfProducts = async () => {
+    try {
+        const products = await knex
+        .from('products')
+        .select('*')
+        .orderBy('price', 'desc')
+        return products
+    } catch (error) {
+        throw new Error("Error al listar los productos", err)
+    }
+}
+
+const addProduct = async (product) => {
+    try {
+        knex('products')
+        .insert(product)
+        .then(() => {
+            return ("Producto agregado")
+            }).catch(err => {
+                throw new Error("Error al agregar el producto", err)
+            }
+        )
+    } catch (error) {
+        throw new Error("Error al agregar el producto", error)
+    }
+}
+
+const getProduct = async (id) => {
+    try {
+        const product = await knex
+        .from('products')
+        .select('*')
+        .where({id})
+        .then((product) => {
+            return product;
+            }).catch(err => {
+                throw new Error("Error al obtener el producto", err)
+            }
+        )
+    } catch (error) {
+        throw new Error("Error al obtener el producto", error)
+    }
+}
+
+const deleteProduct = async (id) => {
+    try {
+        knex
+        .from('products')
+        .select('*')
+        .where('id', '=', id)
+        .del()
+        .then (() => { 
+            return('Producto eliminado'); 
+            }).catch(err => {
+                throw new Error("Error al eliminar el producto", err)
+            }
+        )
+    } catch (error) {
+        throw new Error("Error al eliminar el producto", error)
+    }
+}
+
+module.exports = { listOfProducts, getProduct, addProduct, deleteProduct }
+
+
+
+
 /*const products = [
     {
         "name": "Taza",
@@ -16,44 +86,38 @@
     }
 ]
 
-let id = 1*/
+let id = 1
 
-const fs = require('fs')
-const products = require('../../public/products.json')
 
 class Contenedor {
-    constructor (file){
-        this.file = file;
-    }
-
-    async save(object){
-        try {
-            if (fs.existsSync(this.file)) {
-                const data = await fs.promises.readFile(this.file);
-                const array = JSON.parse(data);
-                object.id = array.length + 1;
-                array.push(object);
-                await fs.promises.writeFile(this.file, JSON.stringify(array, null,2));
-                //console.log('Se ha guardado el objeto con el id: ' + object.id);
-            } else {
-                object.id = 1;
-                await fs.promises.writeFile(this.file, JSON.stringify([object]));
-                //console.log('Se ha guardado el objeto con el id: ' + object.id);
-            }
-        } catch (err) {
-            throw new Error(err);
-        }
+  //Add object
+    save (object) {
+        knex('products').insert({object})
     }
 }
 
-let contenedor = new Contenedor('./public/products.json');
-
 const listOfProducts = () => {
-    return products
+    knex('products')
+        .select('*')
+        .orderBy('id', 'asc')
+        .then(products => {
+            return products
+        })
+        .catch(err => {
+            console.log(err)
+        })
 }
 
 const getProduct = (id) => {
-    return (products.find(product => product.id === parseInt(id)) || { error: 'Producto no encontrado' })
+    return knex('products')
+        .select('*')
+        .where('id', id)
+        .then(product => {
+        return product
+        })
+        .catch(err => {
+        console.log(err)
+        })
 }
 
 const addProduct = (product) => {
@@ -62,7 +126,7 @@ const addProduct = (product) => {
         price: product.price,
         thumbnail: product.thumbnail
     }
-    contenedor.save(prod)
+    Contenedor.save(prod)
 }
 
 const updateProduct = (id, newContent) => {
@@ -71,6 +135,9 @@ const updateProduct = (id, newContent) => {
         product.name = newContent.name
         product.price = newContent.price
         product.thumbnail = newContent.thumbnail
+        knex('products')
+        .where('id', id)
+        .update(product)
         return product
     } else {
         return 'Producto no encontrado'
@@ -80,11 +147,14 @@ const updateProduct = (id, newContent) => {
 const deleteProduct = (id) => {
     const product = getProduct(parseInt(id))
     if ((product.id == id) && (product.id != null)) {
-        products.splice(products.indexOf(product), 1)
+        knex('products')
+        .where('id', id)
+        .del()
         return 'Producto eliminado'
     } else {
         return 'Producto no encontrado'
     }
 }
 
-module.exports = { listOfProducts, getProduct, addProduct, updateProduct, deleteProduct }
+module.exports = { listOfProducts, getProduct, addProduct, updateProduct, deleteProduct }*/
+
