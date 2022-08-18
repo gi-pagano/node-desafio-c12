@@ -1,4 +1,35 @@
-const fs = require('fs')
+const options = require('../../options/sqliteDB');
+const knex = require('knex')(options);
+
+const listOfMessages = async () => {
+    try {
+        const messages = await knex('messages')
+                            .select('*');
+                            return messages;
+    } catch (error) {
+        throw new Error("Error al listar los mensajes", error)
+    }
+}
+
+const addMessage = async (message) => {
+    try {
+        knex('messages')
+        .insert(message)
+        .then(() => {
+            return ("Mensaje agregado")
+        }).catch(err => {
+            throw new Error("Error al agregar el mensaje", err)
+        }
+        )
+    } catch (error) {
+        throw new Error("Error al agregar el mensaje", error)
+    }
+}
+
+module.exports = { listOfMessages, addMessage }
+
+
+/*const fs = require('fs')
 const moment = require('moment')
 
 class Message {
@@ -38,4 +69,4 @@ const addMessage = (message) => {
     messages.save(msg)
 }
 
-module.exports = { addMessage }
+module.exports = { addMessage }*/
